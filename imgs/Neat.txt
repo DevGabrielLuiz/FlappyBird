@@ -1,0 +1,10 @@
+Neural Evolution Augmenting Topology
+Uma inteligência artificial é criada e passa a aprender como jogar o jogo.
+Cada pássaro possui um input e um output, ou seja, uma informação que ele recebe e uma decisão a ser tomada.
+Preciso que IA saiba a Posição do eixo Y do pássaro, e a distância do pássaro do pássaro para o cano de cima e o de baixo.
+A rede neuaral por de baixo dos panos faz uma conta com esses 3 valores que resulta na decisão a ser tomada por ela.
+Cada um desses inputs é multiplicado por um peso e somado a os outros valores, esse resultado é somado a um "bias" que é um valor a principio aleatório e que ira gerar uma "FUNÇÃO DE ATIVAÇÃO" que ajuda a padronizar o resultado final. 
+Ex: Sempre que esse resultado for maior que 10 o pássaro pula. Para evitar uma oscilação muito grande exemplo 1 a 1000 nós colocoamos esse valor em uma tangente hiperbólica, uma tangente que oscila de (-1,1).
+
+Inicialmente os pássaros irão gerar números aleatórios o que gera muitas "mortes" logo no início. A partir disso os pássaros que sobrarem irão tomar as decisões.
+Os 2 pássaros que chegarem mais longe da 1° geração irão ser clonados e cada clone sofrerá uma pequena modificação aleatória em um de seus inputs. Pela quantidade de clones provavelmente algum clone sofrerá uma "evolução" benefica e os dois vencedores dessa geração também serão clonados e assim sussecivamente.
