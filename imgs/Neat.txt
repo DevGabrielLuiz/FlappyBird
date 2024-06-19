@@ -8,3 +8,42 @@ Ex: Sempre que esse resultado for maior que 10 o pássaro pula. Para evitar uma 
 
 Inicialmente os pássaros irão gerar números aleatórios o que gera muitas "mortes" logo no início. A partir disso os pássaros que sobrarem irão tomar as decisões.
 Os 2 pássaros que chegarem mais longe da 1° geração irão ser clonados e cada clone sofrerá uma pequena modificação aleatória em um de seus inputs. Pela quantidade de clones provavelmente algum clone sofrerá uma "evolução" benefica e os dois vencedores dessa geração também serão clonados e assim sussecivamente.
+
+----------------------------------------------------------------------------------------------
+fitness_criterion = "a pontuação que eu desejo alcançar"
+fitness_threshold = "Limite onde o programa é interrompido "
+pop_size = "tamanho da população"
+reset_on_extinction =  "Caso ele não consiga resolver o problema, ele vai lhe dar erro ao inves de gerar novas especies(criar novos pássaros com valores novos)"
+
+node activation options = forma de agregação dos inputs
+node aggregation options = forma de agregação das conexões
+node bias options :
+bias_mutate_rate        = 0.7  Possiblidade de mutação em porcentagem
+bias_replace_rate       = 0.1  Possiblidade de criar um novo pássaro do zero em porcentagem
+bias_mutate_power     forca da mutacao
+
+# genome compatibility options
+compatibility_disjoint_coefficient = 1.0
+compatibility_weight_coefficient   = 0.5     
+-> nivel de semelhanca entre dois pássaros para definir se são da mesma espécie.
+
+# connection add/remove rates
+-> probabilidad de adicionar ou excluir uma conexão.
+
+# connection enable options
+-> sempre ter determinadas conexões e a Possiblidade delas serem mudadas
+
+feed_forward            = True -> como esta ocorrendo a alimentação
+initial_connection      = full 
+
+[DefaultSpeciesSet]  -> Definir se uma espécie pertence a uma determinada população.
+compatibility_threshold = 3.0
+
+[DefaultStagnation]
+species_fitness_func = max  -> 
+max_stagnation       = 20 -> máximo de vezes que uma especie sobrevive sem melhorar a pontuação
+species_elitism      = 2 -> o mínimo de especies que podem existir.
+
+[DefaultReproduction]
+elitism            = 2 -> O máximo de especies que podem passar para a próxima geração sem sofrer mutação
+survival_threshold = 0.2 -> o máximo de indivíduos de uma espécie que podem passar para a próxima geração
