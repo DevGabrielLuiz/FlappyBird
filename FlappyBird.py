@@ -5,13 +5,13 @@ import random
 TELA_LARGURA = 500
 TELA_ALTURA = 800
 
-IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(r'C:\Users\Gabriel\Documents\Projetos_Python\FlappyBird\imgs\pipe.png'))
-IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(r'C:\Users\Gabriel\Documents\Projetos_Python\FlappyBird\imgs\base.png'))
-IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(r'C:\Users\Gabriel\Documents\Projetos_Python\FlappyBird\imgs\bg.png'))
+IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(r'C:\Users\Asus X550L\Documents\Projetos_Python\FlappyBird\imgs\pipe.png'))
+IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(r'C:\Users\Asus X550L\Documents\Projetos_Python\FlappyBird\imgs\base.png'))
+IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(r'C:\Users\Asus X550L\Documents\Projetos_Python\FlappyBird\imgs\bg.png'))
 IMAGENS_PASSARO = [
-    pygame.transform.scale2x(pygame.image.load(r'C:\Users\Gabriel\Documents\Projetos_Python\FlappyBird\imgs\bird1.png')),
-    pygame.transform.scale2x(pygame.image.load(r'C:\Users\Gabriel\Documents\Projetos_Python\FlappyBird\imgs\bird2.png')),
-    pygame.transform.scale2x(pygame.image.load(r'C:\Users\Gabriel\Documents\Projetos_Python\FlappyBird\imgs\bird3.png'))
+    pygame.transform.scale2x(pygame.image.load(r'C:\Users\Asus X550L\Documents\Projetos_Python\FlappyBird\imgs\bird1.png')),
+    pygame.transform.scale2x(pygame.image.load(r'C:\Users\Asus X550L\Documents\Projetos_Python\FlappyBird\imgs\bird2.png')),
+    pygame.transform.scale2x(pygame.image.load(r'C:\Users\Asus X550L\Documents\Projetos_Python\FlappyBird\imgs\bird3.png'))
 ]
 
 pygame.font.init()

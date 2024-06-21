@@ -1,3 +1,4 @@
+import neat.config
 import pygame
 import os
 import random
@@ -10,13 +11,13 @@ geracao =  0
 TELA_LARGURA = 500
 TELA_ALTURA = 800
 
-IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(r'C:\Users\Gabriel\Documents\Projetos_Python\FlappyBird\imgs\pipe.png'))
-IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(r'C:\Users\Gabriel\Documents\Projetos_Python\FlappyBird\imgs\base.png'))
-IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(r'C:\Users\Gabriel\Documents\Projetos_Python\FlappyBird\imgs\bg.png'))
+IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(r'C:\Users\Asus X550L\Documents\Projetos_Python\FlappyBird\imgs\pipe.png'))
+IMAGEM_CHAO = pygame.transform.scale2x(pygame.image.load(r'C:\Users\Asus X550L\Documents\Projetos_Python\FlappyBird\imgs\base.png'))
+IMAGEM_BACKGROUND = pygame.transform.scale2x(pygame.image.load(r'C:\Users\Asus X550L\Documents\Projetos_Python\FlappyBird\imgs\bg.png'))
 IMAGENS_PASSARO = [
-    pygame.transform.scale2x(pygame.image.load(r'C:\Users\Gabriel\Documents\Projetos_Python\FlappyBird\imgs\bird1.png')),
-    pygame.transform.scale2x(pygame.image.load(r'C:\Users\Gabriel\Documents\Projetos_Python\FlappyBird\imgs\bird2.png')),
-    pygame.transform.scale2x(pygame.image.load(r'C:\Users\Gabriel\Documents\Projetos_Python\FlappyBird\imgs\bird3.png'))
+    pygame.transform.scale2x(pygame.image.load(r'C:\Users\Asus X550L\Documents\Projetos_Python\FlappyBird\imgs\bird1.png')),
+    pygame.transform.scale2x(pygame.image.load(r'C:\Users\Asus X550L\Documents\Projetos_Python\FlappyBird\imgs\bird2.png')),
+    pygame.transform.scale2x(pygame.image.load(r'C:\Users\Asus X550L\Documents\Projetos_Python\FlappyBird\imgs\bird3.png'))
 ]
 
 pygame.font.init()
@@ -191,7 +192,11 @@ def main(genomas, config): #Fitness Function -> Diz o quão bem o pássaro foi.
         lista_genomas = []
         passaros = []
         for _,genoma in genomas:
-            neat.nn.FeedForwardNetwork.create()
+            rede = neat.nn.FeedForwardNetwork.create(genoma,config) # método para criar a rede neural
+            redes.append(rede)
+            genoma.fitness = 0
+            lista_genomas.append(genoma)
+            passaros.append(Passaro(230, 350))
     else:
         passaros = [Passaro(230, 350)]
     chao = Chao(700)
@@ -210,14 +215,30 @@ def main(genomas, config): #Fitness Function -> Diz o quão bem o pássaro foi.
                 rodando = False
                 pygame.quit()
                 quit()
-            if evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_SPACE:
-                    for passaro in passaros:
-                        passaro.pular()
+            if not ia_jogando:   # Caso a IA não esteja jogando eu desabilito  a barra de espaço do usuario.
+                if evento.type == pygame.KEYDOWN:
+                    if evento.key == pygame.K_SPACE:
+                        for passaro in passaros:
+                            passaro.pular()
 
+        indice_cano = 0
+        if len(passaros)>0:
+            if len(canos) > 1 and passaros[0].x >(canos[0].x + canos[0].CANO_TOPO.get_width()):
+                indice_cano = 1 # se o passaro já tiver passado do cano então ele deve comparar com o próximo cano
+        else:
+            rodando = False
+            break
+        
+        
         # mover as coisas
-        for passaro in passaros:
+        for i,passaro in enumerate(passaros):
             passaro.mover()
+            #aumentar um pouco a fitness/pontuação do pássaro
+            lista_genomas[i].fitness+=0.1
+            output = redes[i].activate((passaro.y, abs(passaro.y - canos[indice_cano].altura), abs(passaro.y - canos[indice_cano].pos_base))) # Ativa a rede neural e recebe os inputs e devolve um output
+            # -1 e 1 -> se o output for > 0.5 então o passaro pula 
+            if output[0] > 0.5:
+                passaro.pular
         chao.mover()
 
         adicionar_cano = False
@@ -226,6 +247,10 @@ def main(genomas, config): #Fitness Function -> Diz o quão bem o pássaro foi.
             for i, passaro in enumerate(passaros):
                 if cano.colidir(passaro):
                     passaros.pop(i)
+                    if ia_jogando:
+                        lista_genomas[i].fitness -= 1
+                        lista_genomas.pop(i)
+                        redes.pop(i)
                     pygame.quit()# tirar depoois
                     quit()
                 if not cano.passou and passaro.x > cano.x:
@@ -238,16 +263,38 @@ def main(genomas, config): #Fitness Function -> Diz o quão bem o pássaro foi.
         if adicionar_cano:
             pontos += 1
             canos.append(Cano(600))
+            for genoma in lista_genomas:
+                genoma.fitness += 5
         for cano in remover_canos:
             canos.remove(cano)
 
         for i, passaro in enumerate(passaros):
             if (passaro.y + passaro.imagem.get_height()) > chao.y or passaro.y < 0:
                 passaros.pop(i)
+                if ia_jogando:
+                    lista_genomas.pop(i)
+                    redes.pop(i)
                 pygame.quit()#tirar depois
                 quit()
         desenhar_tela(tela, passaros, canos, chao, pontos)
 
-
+def rodar(caminho_config):
+    config = neat.config.Config(neat.DefaultGenome,
+                                neat.DefaultReproduction,
+                                neat.DefaultSpeciesSet,
+                                neat.DefaultStagnation,
+                                caminho_config)
+    populacao = neat.Population(config)
+    # mostrar no terminal as informações que foram obtidas 
+    populacao.add_reporter(neat.StdOutReporter(True))
+    populacao.add_reporter(neat.StatisticsReporter())
+    
+    
+    if ia_jogando:
+        populacao.run(main, 10)  # Este número é a quantidade de gerações limite que o programa irá ter.
+    else:
+        main(None, None)
 if __name__ == '__main__':
-    main()
+    caminho = os.path.dirname(__file__)
+    caminho_config = os.path.join(caminho,'configIA.txt')
+    rodar(caminho_config)
