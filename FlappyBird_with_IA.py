@@ -1,12 +1,10 @@
-import neat.config
 import pygame
 import os
 import random
 import neat
 
-ia_jogando = True
-geracao =  0
-
+ai_jogando = True
+geracao = 0
 
 TELA_LARGURA = 500
 TELA_ALTURA = 800
@@ -96,7 +94,7 @@ class Passaro:
         tela.blit(imagem_rotacionada, retangulo.topleft)
 
     def get_mask(self):
-        return pygame.mask.from_surface(self.imagem)# Gera diversos pixels dentro do retângulo da imagem, esses pixels permitem uma precisão maior na análise de colisão.
+        return pygame.mask.from_surface(self.imagem)
 
 
 class Cano:
@@ -175,31 +173,32 @@ def desenhar_tela(tela, passaros, canos, chao, pontos):
 
     texto = FONTE_PONTOS.render(f"Pontuação: {pontos}", 1, (255, 255, 255))
     tela.blit(texto, (TELA_LARGURA - 10 - texto.get_width(), 10))
-    
-    if ia_jogando: 
+
+    if ai_jogando:
         texto = FONTE_PONTOS.render(f"Geração: {geracao}", 1, (255, 255, 255))
         tela.blit(texto, (10, 10))
+
     chao.desenhar(tela)
     pygame.display.update()
 
 
-def main(genomas, config): #Fitness Function -> Diz o quão bem o pássaro foi.
+def main(genomas, config): # fitness function
     global geracao
     geracao += 1
-    
-    if ia_jogando:
+
+    if ai_jogando:
         redes = []
         lista_genomas = []
         passaros = []
-        for _,genoma in genomas:
-            rede = neat.nn.FeedForwardNetwork.create(genoma,config) # método para criar a rede neural
+        for _, genoma in genomas:
+            rede = neat.nn.FeedForwardNetwork.create(genoma, config)
             redes.append(rede)
             genoma.fitness = 0
             lista_genomas.append(genoma)
             passaros.append(Passaro(230, 350))
     else:
         passaros = [Passaro(230, 350)]
-    chao = Chao(700)
+    chao = Chao(730)
     canos = [Cano(700)]
     tela = pygame.display.set_mode((TELA_LARGURA, TELA_ALTURA))
     pontos = 0
@@ -215,30 +214,31 @@ def main(genomas, config): #Fitness Function -> Diz o quão bem o pássaro foi.
                 rodando = False
                 pygame.quit()
                 quit()
-            if not ia_jogando:   # Caso a IA não esteja jogando eu desabilito  a barra de espaço do usuario.
+            if not ai_jogando:
                 if evento.type == pygame.KEYDOWN:
                     if evento.key == pygame.K_SPACE:
                         for passaro in passaros:
                             passaro.pular()
 
         indice_cano = 0
-        if len(passaros)>0:
-            if len(canos) > 1 and passaros[0].x >(canos[0].x + canos[0].CANO_TOPO.get_width()):
-                indice_cano = 1 # se o passaro já tiver passado do cano então ele deve comparar com o próximo cano
+        if len(passaros) > 0:
+            if len(canos) > 1 and passaros[0].x > (canos[0].x + canos[0].CANO_TOPO.get_width()):
+                indice_cano = 1
         else:
             rodando = False
             break
-        
-        
+
         # mover as coisas
-        for i,passaro in enumerate(passaros):
+        for i, passaro in enumerate(passaros):
             passaro.mover()
-            #aumentar um pouco a fitness/pontuação do pássaro
-            lista_genomas[i].fitness+=0.1
-            output = redes[i].activate((passaro.y, abs(passaro.y - canos[indice_cano].altura), abs(passaro.y - canos[indice_cano].pos_base))) # Ativa a rede neural e recebe os inputs e devolve um output
-            # -1 e 1 -> se o output for > 0.5 então o passaro pula 
+            # aumentar um pouquinho a fitness do passaro
+            lista_genomas[i].fitness += 0.1
+            output = redes[i].activate((passaro.y,
+                                        abs(passaro.y - canos[indice_cano].altura),
+                                        abs(passaro.y - canos[indice_cano].pos_base)))
+            # -1 e 1 -> se o output for > 0.5 então o passaro pula
             if output[0] > 0.5:
-                passaro.pular
+                passaro.pular()
         chao.mover()
 
         adicionar_cano = False
@@ -247,12 +247,10 @@ def main(genomas, config): #Fitness Function -> Diz o quão bem o pássaro foi.
             for i, passaro in enumerate(passaros):
                 if cano.colidir(passaro):
                     passaros.pop(i)
-                    if ia_jogando:
+                    if ai_jogando:
                         lista_genomas[i].fitness -= 1
                         lista_genomas.pop(i)
                         redes.pop(i)
-                    pygame.quit()# tirar depoois
-                    quit()
                 if not cano.passou and passaro.x > cano.x:
                     cano.passou = True
                     adicionar_cano = True
@@ -271,12 +269,12 @@ def main(genomas, config): #Fitness Function -> Diz o quão bem o pássaro foi.
         for i, passaro in enumerate(passaros):
             if (passaro.y + passaro.imagem.get_height()) > chao.y or passaro.y < 0:
                 passaros.pop(i)
-                if ia_jogando:
+                if ai_jogando:
                     lista_genomas.pop(i)
                     redes.pop(i)
-                pygame.quit()#tirar depois
-                quit()
+
         desenhar_tela(tela, passaros, canos, chao, pontos)
+
 
 def rodar(caminho_config):
     config = neat.config.Config(neat.DefaultGenome,
@@ -284,17 +282,18 @@ def rodar(caminho_config):
                                 neat.DefaultSpeciesSet,
                                 neat.DefaultStagnation,
                                 caminho_config)
+
     populacao = neat.Population(config)
-    # mostrar no terminal as informações que foram obtidas 
     populacao.add_reporter(neat.StdOutReporter(True))
     populacao.add_reporter(neat.StatisticsReporter())
-    
-    
-    if ia_jogando:
-        populacao.run(main, 50)  # Este número é a quantidade de gerações limite que o programa irá ter.
+
+    if ai_jogando:
+        populacao.run(main, 50)
     else:
         main(None, None)
+
+
 if __name__ == '__main__':
     caminho = os.path.dirname(__file__)
-    caminho_config = os.path.join(caminho,'configIA.txt')
+    caminho_config = os.path.join(caminho, 'configIA.txt')
     rodar(caminho_config)
