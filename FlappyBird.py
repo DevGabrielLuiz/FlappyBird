@@ -218,7 +218,7 @@ def main():
 
         if adicionar_cano:
             pontos += 1
-            canos.append(Cano(600))
+            canos.append(Cano(600)) 
         for cano in remover_canos:
             canos.remove(cano)
 

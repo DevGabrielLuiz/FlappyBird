@@ -291,7 +291,7 @@ def rodar(caminho_config):
     
     
     if ia_jogando:
-        populacao.run(main, 10)  # Este número é a quantidade de gerações limite que o programa irá ter.
+        populacao.run(main, 50)  # Este número é a quantidade de gerações limite que o programa irá ter.
     else:
         main(None, None)
 if __name__ == '__main__':
