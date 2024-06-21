@@ -1,6 +1,11 @@
 import pygame
 import os
 import random
+import neat
+
+ia_jogando = True
+geracao =  0
+
 
 TELA_LARGURA = 500
 TELA_ALTURA = 800
@@ -169,9 +174,13 @@ def desenhar_tela(tela, passaros, canos, chao, pontos):
 
     texto = FONTE_PONTOS.render(f"Pontuação: {pontos}", 1, (255, 255, 255))
     tela.blit(texto, (TELA_LARGURA - 10 - texto.get_width(), 10))
+    
+    if ia_jogando: 
+        texto = FONTE_PONTOS.render(f"Geração: {geracao}", 1, (255, 255, 255))
+        tela.blit(texto, (10, 10))
     chao.desenhar(tela)
     pygame.display.update()
-
+'''Inserindo o texto da geração que informa a geração que estamos'''
 
 def main():
     passaros = [Passaro(230, 350)]
