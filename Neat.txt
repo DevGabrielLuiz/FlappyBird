@@ -47,3 +47,7 @@ species_elitism      = 2 -> o mínimo de especies que podem existir.
 [DefaultReproduction]
 elitism            = 2 -> O máximo de especies que podem passar para a próxima geração sem sofrer mutação
 survival_threshold = 0.2 -> o máximo de indivíduos de uma espécie que podem passar para a próxima geração
+
+Inserindo o texto da geração que informa a geração que estamos dentro do desenhar_tela
+Fazendo a IA comandar a função Main:
+No Neat a species_fitness_function é obrigada a receber sempre 2 parametros: a lista de genomas e o arquivo config. 

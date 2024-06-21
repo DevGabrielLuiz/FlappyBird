@@ -180,10 +180,20 @@ def desenhar_tela(tela, passaros, canos, chao, pontos):
         tela.blit(texto, (10, 10))
     chao.desenhar(tela)
     pygame.display.update()
-'''Inserindo o texto da geração que informa a geração que estamos'''
 
-def main():
-    passaros = [Passaro(230, 350)]
+
+def main(genomas, config): #Fitness Function -> Diz o quão bem o pássaro foi.
+    global geracao
+    geracao += 1
+    
+    if ia_jogando:
+        redes = []
+        lista_genomas = []
+        passaros = []
+        for _,genoma in genomas:
+            neat.nn.FeedForwardNetwork.create()
+    else:
+        passaros = [Passaro(230, 350)]
     chao = Chao(700)
     canos = [Cano(700)]
     tela = pygame.display.set_mode((TELA_LARGURA, TELA_ALTURA))
