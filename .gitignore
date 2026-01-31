@@ -3,11 +3,11 @@ faplyia.txt
 # Ambiente virtual
 venv/
 .venv/
-
+env/
 # Cache Python
 __pycache__/
 *.pyc
-
+.ideia/
 # Configurações do VS Code
 .vscode/
 
