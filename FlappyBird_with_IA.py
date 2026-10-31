@@ -6,7 +6,7 @@ import neat
 ai_jogando = True
 geracao = 0
 
-TELA_LARGURA = 500
+TELA_LARGURA = 550
 TELA_ALTURA = 800
 
 IMAGEM_CANO = pygame.transform.scale2x(pygame.image.load(r'imgs/pipe.png'))
